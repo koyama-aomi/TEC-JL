@@ -7,6 +7,6 @@ TEC-JL is an evaluation dataset of Japanese grammatical error correction.
 
 
 ## Scripts
-- TEC-JL is built from the Lang-8 corpus, and you need to remove documents with duplicate journal IDs.
 - We provide scripts for the preprocessing.
+- TEC-JL is built from the [Lang-8 corpus](https://sites.google.com/site/naistlang8corpora/), and you need to remove documents with duplicate journal IDs.
 

@@ -29,11 +29,9 @@ def main():
                 outputs.add((src, trg))
                 print(src, file=src_file)
                 print(trg, file=trg_file)
-def preprocess(src, trg):
-    # if src and trg:
-    #     src = normalize_sent(src)
-    #     trg = normalize_sent(trg)
 
+
+def preprocess(src, trg):
     if src and trg:
         trg = remove_some_comments(trg)
 
@@ -42,6 +40,7 @@ def preprocess(src, trg):
         trg = remove_url(trg)
 
     if src and trg:
+        src = remove_long_sent(src)
         trg = remove_long_sent(trg)
 
     if src and trg:
@@ -49,23 +48,15 @@ def preprocess(src, trg):
         trg = remove_short_sent(trg)
 
     if src and trg:
-        src, trg = remove_no_edit_pair(src, trg)
-
-    if src and trg:
-        src, trg = remove_large_edit_distance_pair(src, trg)
-
-    if src and trg:
         src = remove_non_japanese_sent(src)
 
     if src and trg:
         trg = remove_non_japanese_sent(trg)
+    
+    if src and trg:
+        src, trg = remove_large_edit_distance_pair(src, trg)
 
     return src, trg
-
-
-def normalize_sent(sent):
-    sent = unicodedata.normalize("NFKC", sent)
-    return sent
 
 
 def remove_some_comments(sent):
@@ -73,10 +64,12 @@ def remove_some_comments(sent):
     sent = re.sub(r"ok$", "", sent)
     sent = re.sub(r"GOOD$", "", sent)
     sent = re.sub(r"good$", "", sent)
+    sent = re.sub(r"Good$", "", sent)
     sent = re.sub(r"OK!$", "", sent)
     sent = re.sub(r"ok!$", "", sent)
     sent = re.sub(r"GOOD!$", "", sent)
     sent = re.sub(r"good!$", "", sent)
+    sent = re.sub(r"Good!$", "", sent)
     return sent
 
 
@@ -85,25 +78,18 @@ def remove_url(sent):
     return sent
 
 
-def remove_long_sent(sent, threshold=50):
+def remove_long_sent(sent, threshold=80):
     if len(sent) > threshold:
         return None
     else:
         return sent
 
 
-def remove_short_sent(sent, threshold=2):
+def remove_short_sent(sent, threshold=5):
     if len(sent) <= threshold:
         return None
     else:
         return sent
-
-
-def remove_no_edit_pair(src, trg):
-    if src == trg:
-        return None, None
-    else:
-        return src, trg
 
 
 def remove_large_edit_distance_pair(src, trg, threshold=5):
